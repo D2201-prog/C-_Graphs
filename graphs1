@@ -13,6 +13,7 @@ public struct Graph
     private Dictionary<int, List<int>> adjacencyList;
     public GraphType Type { get; private set; }
 
+    public Dictionary<int, List<int>> AdjacencyList => adjacencyList;
     public Graph(GraphType type)
     {
         adjacencyList = new Dictionary<int, List<int>>();
@@ -41,10 +42,10 @@ public struct Graph
         else
         {
             Console.Clear();
-            Console.WriteLine($"Вершина {vertex} уже существует.");
+            //Console.WriteLine($"Вершина {vertex} уже существует.");
         }
         Console.Clear();
-        Console.WriteLine("Указанная вершина была добавлена");
+        //Console.WriteLine("Указанная вершина была добавлена");
     }
 
     public void AddEdge(int source, int destination)
@@ -54,7 +55,7 @@ public struct Graph
             if (!adjacencyList.ContainsKey(source) || !adjacencyList.ContainsKey(destination))
             {
                 Console.Clear();
-                Console.WriteLine("Недопустимые вершины.");
+                //Console.WriteLine("Недопустимые вершины.");
                 return;
             }
 
@@ -68,13 +69,13 @@ public struct Graph
                 }
             }
             Console.Clear();
-            Console.WriteLine("Указанное ребро было добавлено");
+            //Console.WriteLine("Указанное ребро было добавлено");
         }
         else if (Type == GraphType.Directed)
         {
             if (!adjacencyList.ContainsKey(source) || !adjacencyList.ContainsKey(destination))
             {
-                Console.WriteLine("Недопустимые вершины.");
+                //Console.WriteLine("Недопустимые вершины.");
                 return;
             }
 
@@ -84,7 +85,7 @@ public struct Graph
             }
         }
         Console.Clear();
-        Console.WriteLine("Указанное ребро было добавлено");
+        //Console.WriteLine("Указанное ребро было добавлено");
     }
 
     public void RemoveVertex(int vertex)
@@ -98,12 +99,12 @@ public struct Graph
                 adjacencyList[key].Remove(vertex);
             }
             Console.Clear();
-            Console.WriteLine("Указанная вершина была удалена");
+            //Console.WriteLine("Указанная вершина была удалена");
         }
         else
         {
             Console.Clear();
-            Console.WriteLine($"Вершина {vertex} не существует.");
+            //Console.WriteLine($"Вершина {vertex} не существует.");
         }
     }
 
@@ -118,27 +119,12 @@ public struct Graph
                 adjacencyList[destination].Remove(source);
             }
             Console.Clear();
-            Console.WriteLine("Указанное ребро было удалено");
+           // Console.WriteLine("Указанное ребро было удалено");
         }
         else
         {
             Console.Clear();
-            Console.WriteLine("Недопустимые вершины.");
-        }
-    }
-
-    public void Print()
-    {
-        Console.Clear();
-        Console.WriteLine("Граф:");
-        foreach (var vertex in adjacencyList.Keys)
-        {
-            Console.Write($"Вершина {vertex}: ");
-            foreach (var neighbor in adjacencyList[vertex])
-            {
-                Console.Write($"{neighbor} ");
-            }
-            Console.WriteLine();
+            //Console.WriteLine("Недопустимые вершины.");
         }
     }
 
@@ -155,7 +141,7 @@ public struct Graph
                 }
                 writer.WriteLine();
             }
-            Console.WriteLine("Граф был записан в указанный файл");
+           // Console.WriteLine("Граф был записан в указанный файл");
         }
     }
 
@@ -172,7 +158,7 @@ public struct Graph
 
                     if (!int.TryParse(parts[0].Trim(), out int vertex))
                     {
-                        Console.WriteLine($"Невозможно преобразовать '{parts[0].Trim()}' в int");
+                       // Console.WriteLine($"Невозможно преобразовать '{parts[0].Trim()}' в int");
                         continue; // Skip the rest of this iteration and continue with the next line
                     }
 
@@ -184,7 +170,7 @@ public struct Graph
                     {
                         if (!int.TryParse(neighbor, out int neighborValue))
                         {
-                            Console.WriteLine($"Невозможно преобразовать'{neighbor}' в int");
+                            //Console.WriteLine($"Невозможно преобразовать'{neighbor}' в int");
                             continue; // Skip the rest of this iteration and continue with the next neighbor
                         }
 
@@ -196,21 +182,36 @@ public struct Graph
         catch (Exception e)
         {
             //Console.Clear();
-            Console.WriteLine($"Произошла неизвестная ошибка: {e.Message}");
+            //Console.WriteLine($"Произошла неизвестная ошибка: {e.Message}");
         }
     }
 
 }
 
-class Program
+public class Interface
 {
-    static void Main()
+    private Graph graph;
+
+    public Interface(GraphType type)
     {
-        Console.WriteLine("Выберите тип графика (0 для Ориентированного, 1 для Неориентированного):");
-        GraphType type = (GraphType)Enum.Parse(typeof(GraphType), Console.ReadLine());
-
-        Graph graph = new Graph(type);
-
+        graph = new Graph(type);
+    }
+    public void Print()
+    {
+        Console.Clear();
+        Console.WriteLine("Граф:");
+        foreach (var vertex in graph.AdjacencyList.Keys)
+        {
+            Console.Write($"Вершина {vertex}: ");
+            foreach (var neighbor in graph.AdjacencyList[vertex])
+            {
+                Console.Write($"{neighbor} ");
+            }
+            Console.WriteLine();
+        }
+    }
+    public void Run()
+    {
         while (true)
         {
             Console.WriteLine("\nMenu:");
@@ -230,7 +231,7 @@ class Program
                     Console.WriteLine("Введите значение вершины:");
                     int vertex = int.Parse(Console.ReadLine());
                     graph.AddVertex(vertex);
-                    graph.Print();
+                    Print();
                     break;
                 case 2:
                     Console.WriteLine("Введите исходную вершину:");
@@ -238,13 +239,13 @@ class Program
                     Console.WriteLine("Введите конечную вершину:");
                     int destination = int.Parse(Console.ReadLine());
                     graph.AddEdge(source, destination);
-                    graph.Print();
+                    Print();
                     break;
                 case 3:
                     Console.WriteLine("Введите вершину, которую нужно удалить:");
                     int vertexToRemove = int.Parse(Console.ReadLine());
                     graph.RemoveVertex(vertexToRemove);
-                    graph.Print();
+                    Print();
                     break;
                 case 4:
                     Console.WriteLine("Введите исходную вершину:");
@@ -252,30 +253,43 @@ class Program
                     Console.WriteLine("Введите конечную вершину:");
                     int destinationEdge = int.Parse(Console.ReadLine());
                     graph.RemoveEdge(sourceEdge, destinationEdge);
-                    graph.Print();
+                    Print();
                     break;
                 case 5:
                     Console.WriteLine("Введите путь к файлу, чтобы сохранить список смежности:");
                     string filePath = Console.ReadLine();
                     graph.WriteToFile(filePath);
-                    graph.Print();
+                    Print();
                     break;
                 case 6:
+                    Console.WriteLine("Введите путь к файлу, чтобы открыть файл:");
                     string filePath1 = Console.ReadLine();
                     graph.ReadFromFile(filePath1);
-                    graph.Print();
+                    Print();
                     break;
                 case 7:
                     return;
                 default:
                     Console.WriteLine("Неверная команда. Попробуйте снова");
-                    graph.Print();
+                    Print();
                     break;
             }
         }
     }
 }
 
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Выберите тип графика (0 для Ориентированного, 1 для Неориентированного):");
+        GraphType type = (GraphType)Enum.Parse(typeof(GraphType), Console.ReadLine());
+
+        Interface userInterface = new Interface(type);
+        userInterface.Run();
+    }
+}
 
 
 //C:\Users\user\Desktop\nn\n1.txt
+
